@@ -1,7 +1,9 @@
 package be.btorm.tf_java_2023_demojwt.services.impl;
 
 import be.btorm.tf_java_2023_demojwt.models.entities.Book;
+import be.btorm.tf_java_2023_demojwt.models.entities.security.User;
 import be.btorm.tf_java_2023_demojwt.repositories.BookRepository;
+import be.btorm.tf_java_2023_demojwt.repositories.security.UserRepository;
 import be.btorm.tf_java_2023_demojwt.services.BookService;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,11 @@ import java.util.List;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, UserRepository userRepository) {
         this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -46,5 +50,16 @@ public class BookServiceImpl implements BookService {
     public void delete(Long id) {
         Book existingBook = bookRepository.findById(id).orElseThrow();
         bookRepository.delete(existingBook);
+    }
+
+    @Override
+    public void addFavorite(Long userId, Long bookId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        Book book = bookRepository.findById(bookId).orElseThrow();
+
+        user.addFavorite(book);
+
+        userRepository.save(user);
+        bookRepository.save(book);
     }
 }

@@ -29,7 +29,7 @@ public class DataInitializer implements CommandLineRunner {
         seb.setEmail("seb@test.be");
         seb.setRole(RoleType.USER);
         seb.setPassword(bCryptUtils.hash("Test1234="));
-        userRepository.save(admin);
+        userRepository.save(seb);
 
         Book martine = new Book();
         martine.setTitle("Martine à la mer");

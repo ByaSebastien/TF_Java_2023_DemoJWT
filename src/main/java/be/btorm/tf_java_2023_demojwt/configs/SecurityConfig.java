@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 @Configuration
@@ -30,9 +31,10 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(r -> {
                     r
-                            .anyRequest().permitAll()
-                            .requestMatchers(HttpMethod.OPTIONS).permitAll();
+                            .anyRequest().permitAll();
+//                            .requestMatchers(HttpMethod.OPTIONS).permitAll();
                 });
+//        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
