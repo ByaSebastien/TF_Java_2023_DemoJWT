@@ -32,6 +32,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
+    //todo favorite
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();

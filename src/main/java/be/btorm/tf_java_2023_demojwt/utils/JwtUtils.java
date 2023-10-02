@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.security.Key;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -22,9 +23,8 @@ public class JwtUtils {
 
     public JwtUtils(JwtConfig config) {
         this.config = config;
-        SecretKey key = config.secretKey;
-        this.parser = Jwts.parserBuilder().setSigningKey(key).build();
-        this.builder = Jwts.builder().signWith(key);
+        this.parser = Jwts.parserBuilder().setSigningKey(config.secretKey).build();
+        this.builder = Jwts.builder().signWith(config.secretKey);
     }
 
     public String generateToken(User user){
@@ -38,7 +38,7 @@ public class JwtUtils {
     }
 
     public Claims getClaims(String token){
-        return parser.parseClaimsJwt(token).getBody();
+        return parser.parseClaimsJws(token).getBody();
     }
 
     public Long getId(String token){
@@ -49,8 +49,8 @@ public class JwtUtils {
         return getClaims(token).get("email", String.class);
     }
 
-    public RoleType getRole(String token){
-        return  getClaims(token).get("role", RoleType.class);
+    public String getRole(String token){
+        return  getClaims(token).get("role", String.class);
     }
 
     public boolean isValid(String token){
