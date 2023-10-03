@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Member;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping()
 @CrossOrigin("*")
 public class AuthController {
 
