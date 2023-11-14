@@ -18,6 +18,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtils utils;
+    //injection de notre UserService avec polymorphisme etant donné que UserService extends UserDetailsService
     private final UserDetailsService userDetailsService;
 
     public JwtFilter(JwtUtils utils, UserDetailsService userDetailsService) {
@@ -25,6 +26,8 @@ public class JwtFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+
+    //En gros la methode sert a mettre dans notre securityContext l'utilisateur qui fait la requete api si il y en a un
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -32,15 +35,22 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        //Bearer kqdshgijhqilkshgiofudshfiolgfhdiosqhio(token)
         String authorization = request.getHeader("Authorization");
         if(authorization != null){
+            //authorizations[0] = "Bearer"
+            //authorizations[1] = "kqdshgijhqilkshgiofudshfiolgfhdiosqhio" (token)
             String[] authorizations = authorization.split(" ");
             String type = authorizations[0];
             String token = authorizations[1];
             if(type.equals("Bearer") && !token.equals("")){
-                String email = utils.getEmail(token);
-                UserDetails user = userDetailsService.loadUserByUsername(email);
                 if(utils.isValid(token)){
+                    //On recupere l'email depuis le token
+                    String email = utils.getEmail(token);
+                    //On recupere notre UserDetails (User) via le UserDetailsService
+                    UserDetails user = userDetailsService.loadUserByUsername(email);
+
+                    //On affecte le principal (user) les credential (token) et les roles a notre security context avant de rendre la main
                     UsernamePasswordAuthenticationToken upt = new UsernamePasswordAuthenticationToken(user,token,user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(upt);
                 }

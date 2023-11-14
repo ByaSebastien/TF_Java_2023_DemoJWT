@@ -15,6 +15,7 @@ import java.util.*;
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(of = {"id","email","role"})
 @ToString(of = {"id","email","role"})
+//Avec Spring security on a besoin d'une class qui implemente UserDetails
 public class User implements UserDetails {
 
     @Id

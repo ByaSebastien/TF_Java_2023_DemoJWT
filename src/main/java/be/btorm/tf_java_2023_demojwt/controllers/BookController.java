@@ -9,6 +9,7 @@ import be.btorm.tf_java_2023_demojwt.utils.JwtUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class BookController {
         this.jwtUtils = jwtUtils;
     }
 
+    //Oblige à être ADMIN pour faire cet appel API
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<BookDetailsDTO> create(
@@ -51,6 +53,7 @@ public class BookController {
         return ResponseEntity.ok(dto);
     }
 
+    //Oblige a etre ADMIN pour faire cet appel API
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{bookId}")
     public ResponseEntity<BookDetailsDTO> update(
@@ -61,6 +64,7 @@ public class BookController {
         return ResponseEntity.ok(BookDetailsDTO.fromEntity(book));
     }
 
+    //Oblige a etre ADMIN pour faire cet appel API
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{bookId}")
     public ResponseEntity<Object> delete(
@@ -70,12 +74,20 @@ public class BookController {
         return ResponseEntity.status(200).body("Succeed");
     }
 
+    //Oblige a etre authentifié pour faire cet appel API
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/{bookId}")
     public ResponseEntity<Object> addFavorite(
+            //Dans authentication se trouve le UsernamePasswordAuthenticationToken qu'on a gérer dans le jwtFilter
+            //Grace a ceci pas besoin de demander l'id du user par exemple
+            //C'est l'id de l'utilisateur connecté qu'on peut retourver dans le token
             Authentication authentication,
             @PathVariable Long bookId
     ){
+        //Dans UsernamePasswordAuthenticationToken se trouve :
+        //le token dans les credential
+        //l' user dans le principal
+        //et les authorities dans authorities
         String token = authentication.getCredentials().toString();
         Long userId = jwtUtils.getId(token);
         bookService.addFavorite(userId,bookId);

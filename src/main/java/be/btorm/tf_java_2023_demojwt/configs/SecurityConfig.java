@@ -26,7 +26,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.csrf(AbstractHttpConfigurer::disable)
+        //Peut etre plus parametre mais en ce moment
+        //On desactive une grosse partie de la secu (csrf et cors)
+        //On autorise l'acces a tout les url (on gerera individuelement les role dans les methode des controller)
+        http
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(r -> {
                     r
